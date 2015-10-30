@@ -52,10 +52,10 @@ process.on('uncaughtException', function (err) {
     console.error(err.stack);    
 })
 
-// Start the server
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1' 
 
-var server = app.listen(server_port, server_ip_address, function () {
-  console.log( "Listening on " + server_ip_address + ", server_port " + port )
+// Start the server
+app.set('port', global.config.web.port);
+
+var server = app.listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + server.address().port);
 });
