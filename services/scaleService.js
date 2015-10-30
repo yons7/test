@@ -1,5 +1,5 @@
 ﻿var scale = require('../models/scale.js');
-var helper = require('./helper/HelperService.js');
+var helper = require('./helper/helperService.js');
 var configBd;
 
 var _scaleService = {

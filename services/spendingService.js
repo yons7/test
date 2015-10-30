@@ -1,5 +1,5 @@
 ﻿var spending = require('../models/spending.js');
-var helper = require('./helper/HelperService.js');
+var helper = require('./helper/helperService.js');
 var configBd;
 
 var _spendingService = {

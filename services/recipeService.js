@@ -1,5 +1,5 @@
 ﻿var recipe = require('../models/recipe.js');
-var helper = require('./helper/HelperService.js');
+var helper = require('./helper/helperService.js');
 var configBd;
 
 var _recipeService = {
