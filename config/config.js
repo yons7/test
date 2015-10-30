@@ -65,7 +65,7 @@ config.mail.text = 'Bonjour, Votre mot de passe est : ';
 
 //MongoDB
 config.parametreBd = {};
-config.parametreBd.host = 'localhost';
+config.parametreBd.host = '127.0.0.1';
 config.parametreBd.port = '27017';
 config.parametreBd.nameBd = 'configuration';
 config.parametreBd.email = 'Comptable.Easy16i@gmail.com';
