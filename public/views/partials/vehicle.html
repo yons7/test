@@ -1,0 +1,149 @@
+﻿<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Gestion des Véhicules
+                </h1>
+                <ol class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                    </li>
+                    <li>
+                        <i class="fa fa-table"></i> Ajout des Véhicules
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-user-plus"></i><span>Ajouter un nouveau véhicule</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Type de véhicule :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in paramlist.availableOptions">
+                                        <input type="radio" name="radiobutton" ng-model="paramlist.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <form role="form" novalidate angular-validator name="vehiculeCreationForm" angular-validator-submit="createUpdateVehicule({ 'immatriculation' : this.immatriculation,
+                                                                                                                                                                'marque'          : this.marque,
+                                                                                                                                                                'modele'          : this.modele,
+                                                                                                                                                                'cv'              : paramlist.selectedOption.value,
+                                                                                                                                                                'type'            : paramlist.selectedOption.name})">
+
+                            <div class="col-lg-6">
+
+                                <div class="form-group">
+                                    <label for="immatriculation">Immatriculation : </label>
+                                    <input type="text" class="form-control" name="immatriculation" id="immatriculation" ng-model="immatriculation" placeholder="Saisir le matricule de vehicule.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cv">Puissance Fiscale : </label>
+                                    <select name="cv" ng-model="paramlist.selectedOption.value" class="form-control" id="cv" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                            ng-options="value for value in paramlist.selectedOption.values">
+                                        <option value="" disabled selected>Selectionner la puissance fiscale..</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="marque">Marque : </label>
+                                    <input type="text" class="form-control" name="marque" id="marque" ng-model="marque" placeholder="Saisir le modele de vehicule.." size=50>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="modele">Modele : </label>
+                                    <input type="text" class="form-control" name="modele" id="modele" ng-model="modele" placeholder="Saisir la marque de vehicule.." size=50>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group pull-right">
+                                <button type="submit" class="btn btn-easy16i">Enregistrer la véhicule</button>
+                                <button type="button" class="btn btn-default" ng-click="reset()">Vider les champs</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1">
+                        </div>
+                        <div class="col-lg-10">
+                            <div class="table-responsive">
+
+                                <table st-table="displayedVehicleList" st-safe-src="vehicleList" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Immatriculation</th>
+                                            <th>
+                                                <select st-search="type">
+                                                    <option value="">Véhicules</option>
+                                                    <option ng-repeat="var in vehicleList | unique : 'type'" value="{{var.type}}"> {{var.type}}</option>
+                                                </select>
+                                            </th>
+                                            <th>Marque</th>
+                                            <th>Modele</th>
+                                            <th>Puissance Fiscale</th>
+                                            <th st-sort="vehicle.created">Date de création</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="vehicle in displayedVehicleList">
+                                            <td>{{vehicle.immatriculation}}</td>
+                                            <td>{{vehicle.type}}</td>
+                                            <td>{{vehicle.marque}}</td>
+                                            <td>{{vehicle.modele}}</td>
+                                            <td>{{vehicle.cv}}</td>
+                                            <td>{{vehicle.created | date}} {{vehicle.created.substring(11, 16)}}</td>
+                                            <td>
+                                                <div confirm-delete-inline on-confirm="deleteVehicule(vehicle)" on-start-edit="starEditVehicule(vehicle)" allow-edit="true"></div>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+
+                                        <tr ng-show="displayedVehicleList.length >= 10">
+                                            <td colspan="7" class="text-center">
+                                                <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="displayedVehicleList.length === 0">
+                                            <td colspan="7" class="text-center">
+                                                <div class="alert alert-info col-lg-12">
+                                                    <i class="fa fa-info-circle"></i> Aucun véhicule correspondant au filtre n'a été saisie pour l'année civile<strong>{{currentDate.year}}</strong>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                          
+                        </div>
+                        <div class="col-lg-1">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

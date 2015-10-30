@@ -1,0 +1,242 @@
+﻿
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Gestion des Recettes
+                </h1>
+                <ol class="breadcrumb">
+                    <li ng-if="isEdit">
+                        <i class="fa fa-edit"></i><a ng-click="changePage()"> Ajout des justificatifs des recettes</a>
+                    </li>
+                    <li class="active" ng-if="!isEdit">
+                        <i class="fa fa-edit"></i> Ajout des justificatifs des recettes
+                    </li>
+                    <li ng-if="!isEdit">
+                        <i class="fa fa-table"></i><a ng-click="changePage()"> Liste des justificatifs des recettes</a>
+                    </li>
+                    <li class="active" ng-if="isEdit">
+                        <i class="fa fa-table"></i> Liste des justificatifs des recettes
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center" ng-hide="isEdit">
+                            <i class="fa fa-user-plus"></i><span>Enregistrer un nouveau justificatif de recette</span>
+                        </h3>
+                        <h3 class="text-center" ng-show="isEdit">
+                            <i class="fa fa-users"></i><span>Liste des recettes</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body" ng-hide="isEdit">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="type">Type de Paiement :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in paymentRadio.availableOptions">
+                                        <input type="radio" name="typePayement" ng-model="paymentRadio.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="type">Type de Recette :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in recipeRadio.availableOptions">
+                                        <input type="radio" name="typesRecipe" ng-model="recipeRadio.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <form role="form" novalidate angular-validator id="recipeCreationForm" name="recipeCreationForm" angular-validator-submit="createUpdateRecipe( { 'num_justification'    : this.num,
+                                                                                                                                                                'date'                 : currentDate ,
+                                                                                                                                                                'date_operation'       : this.date,
+                                                                                                                                                                'modePayment'             : this.paymentRadio.selectedOption.id,
+                                                                                                                                                                'recipe'               : this.recipeRadio.selectedOption.id,
+                                                                                                                                                                'gite'                 : this.selectedGite._id,
+                                                                                                                                                                'amount'               : this.montant,
+                                                                                                                                                                'description1'         : {
+                                                                                                                                                                                        'libelle': this.libelleList.selectedOption.recipe.name,
+                                                                                                                                                                                        'information' : this.desc
+                                                                                                                                                                                    },
+                                                                                                                                                                'description2'         : {
+                                                                                                                                                                                        'tenant_name': this.nomLoc,
+                                                                                                                                                                                        'rental_time' : this.periodeloc,
+                                                                                                                                                                                        'libelle': this.libelleList.selectedOption.location.name
+                                                                                                                                                                                    },
+                                                                                                                                                                'description3'         : {                                                                                                                                                     'tenant_name': this.nomLoc,
+                                                                                                                                                                                        'star_date' : this.datedebut,
+                                                                                                                                                                                        'rental_time': this.periode
+                                                                                                                                                                                    }
+                                                                                                                                                            })">
+
+
+                            <div class="col-lg-6">
+
+
+                                <div class="form-group">
+                                    <label for="gite">Gite : </label>
+                                    <select name="gite" ng-model="selectedGite" class="form-control" id="gite" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                            ng-options="(accomodation.name +'  '+ accomodation.city +'-'+ accomodation.country) for accomodation in accomodationList track by accomodation._id">
+                                        <option value="" disabled selected>Sélectionner une Gite ..</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <p>Si votre Gite n'existe pas dans la liste ci-dessus, vous pouvez l'ajouter ici: <a href="#{{config.routes.accomodation.RouteUrl}}">Gestion des Gites</a>.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="num">Numéro de piéce justificatif : </label>
+                                    <input type="text" class="form-control" name="num" id="num" ng-model="num" placeholder="Saisir le num de la piéce justificatif.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="date">Date d'opération : </label>
+                                    <input type="date" class="form-control" name="date" id="date" ng-model="date" placeholder="yyyy-MM-dd" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="montant">Montant (€) : </label>
+                                    <input class="form-control" type="number" name="montant" id="montant" step="0.01" min="0" placeholder="Saisir le montant de dépense.." ng-model="montant" required required-message="'{{validationMessages.requiredMessage}}'">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="panel panel-easy16i-inside">
+                                    <div class="panel-heading">
+                                        <h4 class="text-center">Information Complémentaire de Recette</h4>
+                                    </div>
+                                    <div class="panel-body" ng-show="recipeRadio.selectedOption.id==1">
+                                        <div class="form-group">
+                                            <label for="nature">Nature de recette : </label>
+                                            <select name="nature" ng-model="libelleList.selectedOption.recipe" class="form-control" id="nature" validator="(recipeRadio.selectedOption.id!=1 || this.libelleList.selectedOption.recipe.name.length > 0 )" invalid-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                                    ng-options="nature.name for nature in libelleList.availableOptions.recipe track by nature.name">
+                                                <option value="" disabled selected>Sélectionner la nature de recette ..</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="desc">Description de la recette : </label>
+                                            <textarea class="form-control" name="desc" id="desc" ng-model="desc" placeholder="Saisir la description de dépense.." rows="5" maxlength="250" style="resize:none;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body" ng-show="recipeRadio.selectedOption.id==2">
+                                        <div class="form-group">
+                                            <label for="nomLoc">Nom du locataire : </label>
+                                            <input type="text" class="form-control" name="nomLoc" id="nomLoc" ng-model="nomLoc" placeholder="Saisir le Nom du locataire.." size=50 invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.nomLoc.length > 0 || recipeRadio.selectedOption.id!=2)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="periodeloc">Période de location : </label>
+                                            <input type="number" min="0" step="1" class="form-control" name="periodeloc" id="periodeloc" ng-model="periodeloc" placeholder="Saisir la période de location.." invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.periodeloc > 0 || recipeRadio.selectedOption.id!=2)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="natureloc">Nature de location : </label>
+                                            <select name="natureloc" ng-model="libelleList.selectedOption.location" class="form-control" id="natureloc" validator="( this.libelleList.selectedOption.location.name.length > 0 || recipeRadio.selectedOption.id!=2)" invalid-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                                    ng-options="nature.name for nature in libelleList.availableOptions.location track by nature.name">
+                                                <option value="" disabled selected>Sélectionner la nature de location ..</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body" ng-show="recipeRadio.selectedOption.id==3">
+                                        <div class="form-group">
+                                            <label for="datedebut">Date de début : </label>
+                                            <input type="date" class="form-control" name="datedebut" id="datedebut" ng-model="datedebut" placeholder="yyyy-MM-dd" invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.datedebut != undefined  || recipeRadio.selectedOption.id!=3)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="periode">Période d'occupation : </label>
+                                            <input type="number" min="0" step="1" class="form-control" name="periode" id="periode" ng-model="periode" placeholder="Saisir la période de location.." invalid-message="'{{validationMessages.requiredMessage}}'" validator="( this.periode > 0 || recipeRadio.selectedOption.id!=3)" validate-on="dirty">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group pull-right">
+                                <button type="submit" class="btn btn-easy16i">Enregistrer le justificatif de recette</button>
+                                <button type="button" class="btn btn-default" ng-click="reset()">Vider les champs</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-responsive" ng-show="isEdit">
+                            <table st-table="displayedRecipeList" st-safe-src="recipeList" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>N° de piéce justificatif</th>
+                                        <th>
+                                            <select st-search="gite._id">
+                                                <option value="">All Gites</option>
+                                                <option ng-repeat="var in recipeList | unique : 'gite._id'" value="{{var.gite._id}}">{{var.gite.name +'  '+ var.gite.city +'-'+ var.gite.country}}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="date_operation">Date d'opération</th>
+                                        <th>
+                                            <select st-search="modePayment">
+                                                <option value="">All mode Paiement</option>
+                                                <option ng-repeat="var in recipeList | unique : 'modePayment'" value="{{var.modePayment}}"> {{paymentRadio.availableOptions[var.modePayment-1].name}}</option>
+                                            </select>
+                                        </th>
+
+                                        <th>
+                                            <select st-search="recipe">
+                                                <option value="">All Type de recettes</option>
+                                                <option ng-repeat="var in recipeList | unique : 'recipe'" value="{{var.recipe}}"> {{recipeRadio.availableOptions[var.recipe-1].name}}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="amount">Montant</th>
+                                        <th>Inforamtion</th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="param in displayedRecipeList">
+                                        <td>{{param.num_justification}}</td>
+                                        <td>{{param.gite.name +'  '+ param.gite.city +'-'+ param.gite.country}}</td>
+                                        <td>{{param.date_operation | date}}</td>
+                                        <td>
+                                            {{paymentRadio.availableOptions[param.modePayment-1].name}}
+                                        </td>
+                                        <td>{{param.recipe === 1 ? param.description1.libelle : param.recipe === 3 ? 'Occupation Personnelle' : "Loyers (" + param.description2.libelle + ")"}}</td>
+                                        <td>{{param.amount | currency}}</td>
+                                        <td>{{param.recipe === 1 ? param.description1.information : param.recipe === 2 ? "Locataire : " + param.description2.tenant_name + " / " + param.description2.rental_time +" jour(s)": "Date debut : " + param.description3.star_date.substring(0, 10) + " / " + param.description3.rental_time +" jour(s)"}}</td>
+                                        <td>
+                                            <div class="pull-right">
+                                                <div confirm-delete-inline on-confirm="deleteRecipe(param)" on-start-edit="starEditRecipe(param)" allow-edit="true"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="recipeList.length >= itemsByPage">
+                                        <td colspan="8" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="displayedRecipeList.length === 0">
+                                        <td colspan="8" class="text-center">
+                                            <div class="alert alert-info col-lg-12">
+                                                <i class="fa fa-info-circle"></i> Le filtre choisi ne retourne aucune recette saisie pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

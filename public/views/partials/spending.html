@@ -1,0 +1,235 @@
+﻿
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Gestion des Dépenses
+                </h1>
+                <ol class="breadcrumb">
+                    <li ng-if="isEdit">
+                        <i class="fa fa-edit"></i><a ng-click="changePage()"> Ajout des justificatifs des dépenses</a>
+                    </li>
+                    <li class="active" ng-if="!isEdit">
+                        <i class="fa fa-edit"></i> Ajout des justificatifs des dépenses
+                    </li>
+                    <li ng-if="!isEdit">
+                        <i class="fa fa-table"></i><a ng-click="changePage()"> Liste des justificatifs des dépenses</a>
+                    </li>
+                    <li class="active" ng-if="isEdit">
+                        <i class="fa fa-table"></i> Liste des justificatifs des dépenses
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center" ng-hide="isEdit">
+                            <i class="fa fa-user-plus"></i><span>Enregistrer un nouveau justificatif de dépense</span>
+                        </h3>
+                        <h3 class="text-center" ng-show="isEdit">
+                            <i class="fa fa-users"></i><span> Liste des dépenses</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body" ng-hide="isEdit">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="type">Type de Paiement :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in paymentRadio.availableOptions">
+                                        <input type="radio" name="typePayement" ng-model="paymentRadio.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="type">Type de Dépense :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in spendRadio.availableOptions">
+                                        <input type="radio" name="typeSpend" ng-model="spendRadio.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <form role="form" novalidate angular-validator name="spendingCreationForm" angular-validator-submit="createUpdateSpending( {'num_justification'   : this.num,
+                                                                                                                                                                'date'                : currentDate ,
+                                                                                                                                                                'date_operation'      : this.date,
+                                                                                                                                                                'modePayment'            : this.paymentRadio.selectedOption.id,
+                                                                                                                                                                'spend'               : this.spendRadio.selectedOption.id,
+                                                                                                                                                                'gite'                : this.selectedGite._id,
+                                                                                                                                                                'amount'              : this.montant,
+                                                                                                                                                                'description'         : {
+                                                                                                                                                                                        'provider_name': this.nomFour,
+                                                                                                                                                                                        'description' : this.desc,
+                                                                                                                                                                                        'nature': this.selectedNature.name
+                                                                                                                                                                                    },
+                                                                                                                                                                'information'         : {
+                                                                                                                                                                                        'tenant_name': this.nomLoc,
+                                                                                                                                                                                        'rental_time' : this.periode,
+                                                                                                                                                                                        'reason_rembourssement': this.motif
+                                                                                                                                                                                    }
+                                                                                                                                                            })">
+
+                        
+                            <div class="col-lg-6">
+
+                                <div class="form-group">
+                                    <label for="gite">Gite : </label>
+                                    <select name="gite" ng-model="selectedGite" class="form-control" id="gite" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                            ng-options="(accomodation.name +'  '+ accomodation.city +'-'+ accomodation.country) for accomodation in accomodationList track by accomodation._id">
+                                        <option value="" disabled selected>Sélectionner une Gite ..</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <p>Si votre Gite n'existe pas dans la liste ci-dessus, vous pouvez l'ajouter ici: <a href="#{{config.routes.accomodation.RouteUrl}}">Gestion des Gites</a>.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="num">Numéro de piéce justificatif : </label>
+                                    <input type="text" class="form-control" name="num" id="num" ng-model="num" placeholder="Saisir le num de la piéce justificatif.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="date">Date d'opération : </label>
+                                    <input type="date" class="form-control" name="date" id="date" ng-model="date" placeholder="yyyy-MM-dd" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="montant">Montant (€) : </label>
+                                    <input class="form-control" type="number" name="montant" id="montant" step="0.01" min="0" placeholder="Saisir le montant de dépense.." ng-model="montant" required required-message="'{{validationMessages.requiredMessage}}'">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="panel panel-easy16i-inside">
+                                    <div class="panel-heading">
+                                        <h4 class="text-center">Information Complémentaire de dépense</h4>
+                                    </div>
+                                    <div class="panel-body" ng-show="spendRadio.selectedOption.id==1">
+                                        <div class="form-group">
+                                            <label for="nomFour">Nom du fournisseur : </label>
+                                            <input type="text" class="form-control" name="nomFour" id="nomFour" ng-model="nomFour" placeholder="Saisir le Nom du fournisseur.." size=50 invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.nomFour.length > 0 || spendRadio.selectedOption.id!=1)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="desc">Description de la dépense : </label>
+                                            <textarea class="form-control" name="desc" id="desc" ng-model="desc" placeholder="Saisir la description de dépense.." rows="5" maxlength="250" style="resize:none;" invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.desc.length > 0 || spendRadio.selectedOption.id!=1)" validate-on="dirty"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nature">Nature de dépense : </label>
+                                            <div class="input-group">
+                                                <select name="nature" ng-model="selectedNature" class="form-control" id="nature" validator="(this.selectedNature.name.length || spendRadio.selectedOption.id!=1)" invalid-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                                        ng-options="nature.name for nature in listNatureSpend track by nature.name">
+                                                    <option value="" disabled selected>Sélectionner la nature de dépense ..</option>
+                                                </select>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" ng-click="infoBull()" style="margin-bottom : 25px;">
+                                                        <i class="fa fa-question-circle"></i>
+                                                    </button>
+                                                </span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body" ng-show="spendRadio.selectedOption.id==2">
+                                        <div class="form-group">
+                                            <label for="nomLoc">Nom du locataire : </label>
+                                            <input type="text" class="form-control" name="nomLoc" id="nomLoc" ng-model="nomLoc" placeholder="Saisir le Nom du locataire.." size=50 invalid-message="'{{validationMessages.requiredMessage}}'" validator="( this.nomLoc.length > 0 || spendRadio.selectedOption.id!=2)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="periode">Période de location : </label>
+                                            <input type="number" min="0" step="1" class="form-control" name="periode" id="periode" ng-model="periode" placeholder="Saisir la période de location.." invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.periode > 0 || spendRadio.selectedOption.id!=2)" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="motif">Motif de rembourssement : </label>
+                                            <textarea class="form-control" name="motif" id="motif" ng-model="motif" placeholder="Saisir le motif du remboursement.." rows="5" maxlength="250" style="resize:none;" invalid-message="'{{validationMessages.requiredMessage}}'" validator="(this.motif.length > 0 || spendRadio.selectedOption.id!=2)" validate-on="dirty"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group pull-right">
+                                <button type="submit" class="btn btn-easy16i">Enregistrer la justificatif de dépense</button>
+                                <button type="button" class="btn btn-default" ng-click="reset()">Vider les champs</button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive" ng-show="isEdit">
+                            <table st-table="displayedSpendingList" st-safe-src="spendingList" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>N° de piéce justificatif</th>
+                                        <th>
+                                            <select st-search="gite._id">
+                                                <option value="">Gites</option>
+                                                <option ng-repeat="var in spendingList | unique : 'gite._id'" value="{{var.gite._id}}">{{var.gite.name +'  '+ var.gite.city +'-'+ var.gite.country}}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="date_operation">Date d'opération</th>
+                                        <th>
+                                            <select st-search="modePayment">
+                                                <option value="">Mode Paiement</option>
+                                                <option ng-repeat="var in spendingList | unique : 'modePayment'" value="{{var.modePayment}}"> {{paymentRadio.availableOptions[var.modePayment-1].name}}</option>
+                                            </select>
+                                        </th>
+
+                                        <th>
+                                            <select st-search="spend">
+                                                <option value="">Type de Depense</option>
+                                                <option ng-repeat="var in spendingList | unique : 'spend'" value="{{var.spend}}"> {{spendRadio.availableOptions[var.spend-1].name}}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="amount">Montant</th>
+                                        <th>Libellé</th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="param in displayedSpendingList">
+                                        <td>{{param.num_justification}}</td>
+                                        <td>{{param.gite.name +'  '+ param.gite.city +'-'+ param.gite.country}}</td>
+                                        <td>{{param.date_operation | date}}</td>
+                                        <td>
+                                            {{paymentRadio.availableOptions[param.modePayment-1].name}}
+                                        </td>
+                                        <td>{{param.spend == 1 ? param.description.nature :"Remboursement location"}}</td>
+                                        <td>{{param.amount | currency}}</td>
+                                        <td>{{param.spend == 1 ? "Fournisseur : " + param.description.provider_name : "Locataire : " + param.information.tenant_name + " / " + param.information.rental_time +" jour(s)"}}</td>
+                                        <td>
+                                            <div class="pull-right">
+                                                <div confirm-delete-inline on-confirm="deleteSpending(param)" on-start-edit="starEditSpending(param)" allow-edit="true"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="displayedSpendingList.length >= 10">
+                                        <td colspan="8" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="displayedSpendingList.length === 0">
+                                        <td colspan="8" class="text-center">
+                                            <div class="alert alert-info col-lg-12">
+                                                <i class="fa fa-info-circle"></i> Aucune dépense du filter que vous avez choisi n'a été saisie pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

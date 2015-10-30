@@ -1,0 +1,54 @@
+﻿<link rel="stylesheet" type="text/css" href="css/app.css">
+<div class="container-fluid" style="width: 515px; margin: 0 auto;">
+    <div class="panel panel-easy16i login">
+        <div class="panel-heading">
+            <h3 class="text-center">Bienvenue sur le portail Easy16i Comptable</h3>
+        </div>
+        <form role="form" class="panel-body" novalidate angular-validator name="loginForm" angular-validator-submit="login({'email':this.email, password:this.password})">
+
+            <div class="form-group">                
+                <div class="input-group easy16Form">
+                        <span class="input-group-addon" style="line-height: 1.42857143; float: left; width: 8%;"><i class="fa fa-user"></i></span>
+                        <input type="email" style="float: left; width:92%;" class="form-control" name="email" id="email" ng-model="email" placeholder="Saisir l'email.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur" invalid-message="'{{validationMessages.emailBadFormat}}'">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-group easy16Form">
+                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe.." ng-model="password" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <span class="pull-right" style="margin-bottom:15px;"><a href="#">Mot de passe oublié ?</a></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-easy16i btn-lg btn-block">Login</button>
+            </div>
+
+            <!--Alert messages will appear here and disappear after 10seconds, using angular-flash-alert-->
+            <!--<div id="msgwrapper" style="position: relative; overflow: visible;left: 25px;"></div>-->
+        </form>
+    </div>
+    <div class="alert alert-danger animate-if animate-this" ng-if="authError">
+        <div class="close" ng-click="clearAuthError()">&times;</div>
+        <span><strong>{{ressourcesMessages.authErrorTitle}}:</strong> {{ressourcesMessages.authError}}</span>
+    </div>
+</div>
+<div class="container-fluid" ng-if="showMenu">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Fin de session Easy16i Comptable</h3>
+        </div>
+        <div class="panel-body">
+            <p>Nous Vous remercions d'avoir utilisé Easy16i.</p>
+            <p>Bonne journée.</p>
+        </div>
+    </div>
+</div>
+
+
+
+    

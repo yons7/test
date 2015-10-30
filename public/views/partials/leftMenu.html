@@ -1,0 +1,50 @@
+﻿<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li class="active">
+            <a href="#{{config.routes.home.RouteUrl}}"><i class="fa fa-home"></i> Accueil</a>
+        </li>
+        <li>
+            <a href="#{{config.routes.recipe.RouteUrl}}"><i class="fa fa-fw fa-edit"></i> Saisie des piéces justificatives de recettes</a>
+        </li>
+        <li>
+            <a href="#{{config.routes.spending.RouteUrl}}"><i class="fa fa-fw fa-edit"></i> Saisie des piéces justificatives de dépenses</a>
+        </li> 
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#demo1"><i class="fa fa-car"></i> Saisie des frais kilométriques <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="demo1" class="collapse">
+                <li>
+                    <a href="#{{config.routes.km.RouteUrl}}">Frais kilométriques</a>
+                </li>
+                <li>
+                    <a href="#{{config.routes.vehicle.RouteUrl}}">Gestion des Véhicules</a>
+                </li>
+            </ul>
+        </li>       
+        <li>
+            <a href="#{{config.routes.bankStatement.RouteUrl}}"><i class="fa fa-money"></i> Saisie des relevés bancaires</a>
+        </li>
+        <li>
+            <a href="#{{config.routes.mapping.RouteUrl}}"><i class="fa fa-balance-scale"></i> Rapprochement des piéces justificatives</a>
+        </li>
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#demo2"><i class="fa fa-table"></i> Tableau de bord <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="demo2" class="collapse">
+                <li>
+                    <a href="#{{config.routes.recipesTable.RouteUrl}}">Recettes</a>
+                </li>
+                <li>
+                    <a href="#{{config.routes.spendingTable.RouteUrl}}">Dépenses</a>
+                </li>
+                <li>
+                    <a href="#{{config.routes.kmsTable.RouteUrl}}">Indemnités des frais kilométriques</a>
+                </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href=""><i class="fa fa-file-excel-o"></i> Synthése</a>
+        </li>
+    </ul>
+</div>
+<!-- /.navbar-collapse -->

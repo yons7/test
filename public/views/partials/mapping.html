@@ -1,0 +1,163 @@
+﻿<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Rapprochement pour {{months[currentDate.month- 1]}} {{currentDate.year}}
+                </h1>
+                <ol class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                    </li>
+                    <li ng-if="operationType === 'Crédit'">
+                        <i class="fa fa-file-excel-o"></i> Rapprochement des pièces justificatives de recettes
+                    </li>
+                    <li ng-if="operationType === 'Débit'">
+                        <i class="fa fa-file-excel-o"></i> Rapprochement des pièces justificatives de depenses
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="col-lg-12" ng-if="currentBankStatement === undefined || currentBankStatement === null">
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle"></i> Votre relevé bancaire n'est toujours pas saisi pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong>, vous pouvez le saisir ici :<a href="#{{config.routes.bankStatement.RouteUrl}}" ng-click="tellNextScopeToRedirectBackHere()"> Saisie des relevés bancaires</a>
+            </div>
+        </div>
+
+        <div class="col-lg-12" ng-if="operationType === 'None'">
+            <div class="alert alert-success">
+                <i class="fa fa-check-circle"></i> Vous avez déjà terminé le rapprochement pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong> avec succès.
+            </div>
+        </div>
+
+        <div class="row" ng-if="currentBankStatement !== undefined && currentBankStatement !== null && operationType !== 'None'">
+            <div class="col-lg-12">
+                <div class="alert alert-success" ng-if="operationType === 'Débit'">
+                    <i class="fa fa-check-circle"></i> Vous avez déjà terminer le rapprochement des recettes avec succès.
+                </div>
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> Pour continuer l'exercice, veuillez selectionner/affecter un justificatif pour chaque opération de {{operationType === 'Crédit' ? 'recette' : 'dépense'}} figurante sur votre relevé bancaire.
+                </div>
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-eye"></i><span>Opérations de {{operationType === 'Crédit' ? 'recettes' : 'dépenses'}} sur le relevé pour {{months[currentDate.month-1]}} {{currentDate.year}}</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table st-table="displayedStatementLineList" st-safe-src="currentBankStatement.transactions" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Libellé</th>
+                                        <th>Montant</th>
+                                        <th>Affectation/ Justification</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="line in displayedStatementLineList" ng-class="(filteredSet.length < 1) ? 'danger':'' " ng-if="line.type === operationType">
+                                        <td>{{line.title}}</td>
+                                        <td>{{line.amount}}</td>
+                                        <td class="col-lg-5">
+                                            <select name="select_{{$index}}" ng-model="selections.selectedOption[$index]" class="form-control" id="select_{{$index}}"
+                                                    ng-options="justif.friendlyname for justif in filteredSet=(justificationList | filter:isOptionDisabled($index)) track by justif._id"
+                                                    ng-change="updateOptions({{$index}})"
+                                                    ng-hide="(filteredSet.length == 0) || (selections.selectedOption[$index] && selections.selectedOption[$index].id != 0)"></select>
+                                            <div class="displaySelect btn btn-success" ng-show="selections.selectedOption[$index] && selections.selectedOption[$index].id != 0" style="width:100%">
+                                                <span class="value">{{selections.selectedOption[$index].friendlyname}}</span>
+                                                <i class="fa fa-times closeButton" ng-click="selections.selectedOption[$index] = selections.availableOptions[0]; clearOption($index, line)"></i>
+                                            </div>
+                                            {{selectOnlyOptionAvailable($index, filteredSet, line)}}
+                                            <div ng-show="filteredSet.length < 1">
+                                                <span>
+                                                    Aucun justificatif ne coresponds à cette ligne, cliquer
+                                                    <button type="button" class="btn btn-xs btn-easy16i" ng-click="addJustification(line)"><i class="fa fa-plus"></i></button>
+                                                    pour l'ajouter.
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="displayedStatementLineList.length > itemsByPage">
+                                        <td colspan="3" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="pull-right">
+                                                <!--<button type="button" class="btn btn-default" ng-click="resetAffectations()">Vider les champs</button>-->
+                                                <!--<button type="button" class="btn btn-warning" ng-click="cancel()">Valider la saisie</button>-->
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="currentBankStatement !== undefined && currentBankStatement !== null &&
+             justificationList !== undefined && justificationList !== null && !allJustificationsAreAssigned()">
+            <div class="col-lg-12">
+                <div class="alert alert-warning">
+                    <i class="fa fa-exclamation-circle"></i> Vous ne pourrez continuer l'exercice pour ce mois que si tous les justificatifs de recettes sont affectées à une opération du relevé bancaire.. (vous pouvez supprimer les piéces de justification qui ne correspondent à aucune opération de recette sur votre relévé bancaire ci dessous):
+                </div>
+
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="text-center" style="font-size:22px;">
+                            <i class="fa fa-eye"></i><span> Liste des justificatifs de {{operationType === 'Crédit' ? 'recettes' : 'dépenses'}} toujours non affectés pour {{months[currentDate.month-1]}} {{currentDate.year}}</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table st-table="displayedJustificationList" st-safe-src="justificationList" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Numéro de justificatif</th>
+                                        <th>Gite</th>
+                                        <th>Montant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="line in displayedJustificationList" ng-if="!isAlreadyAssigned(line)">
+                                        <td>{{line.friendlyname}}</td>
+                                        <td>{{line.num_justification}}</td>
+                                        <td>{{line.gite.name + ' sur ' + line.gite.city}}</td>
+                                        <td>{{line.amount}}</td>
+                                        <td>
+                                            <div confirm-delete-inline on-confirm="deleteSingleJustification(line)" class="pull-right"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="displayedJustificationList.length > itemsByPage">
+                                        <td colspan="5" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <div confirm-delete-form on-confirm="deleteAllJustifications()" btn-text="'Supprimer tous les justificatifs sur cette liste'"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12" ng-if="currentBankStatement !== undefined && currentBankStatement !== null && operationType !== 'None' ">
+            <button type="button" class="btn btn-easy16i pull-right" ng-click="saveStatementAndContinue()" ng-class="checkExerciceIsValid()">Enregistrer l'exercice et continuer »</button>
+        </div>
+    </div>
+</div>

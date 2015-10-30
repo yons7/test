@@ -1,0 +1,13 @@
+﻿<div id="partials/templates/deleteConfirmationInline.html">
+    <div class="text-center">
+        <div ng-hide="isDeleting" class="buttonPanel center-block">
+            <button type="button" ng-show="allowEdit && inlineEdit"  intable-edit class="btn btn-sm btn-primary startEditBtn" ng-click="startEdit()"><i class="fa fa-pencil-square-o"></i></button>
+            <button type="button" ng-show="allowEdit && !inlineEdit" class="btn btn-sm btn-primary startEditBtn" ng-click="startEdit()"><i class="fa fa-pencil-square-o"></i></button>
+            <button type="button" class="btn btn-sm btn-danger" ng-click="startDelete()"><i class="fa fa-trash-o"></i></button>
+        </div>
+        <div ng-show="isDeleting" class="confirmPanel text-center">
+            <button type="button" class="btn btn-default btn-sm" ng-click="cancel()"> Annuler</button>
+            <button type="button" class="btn btn-danger btn-sm" ng-click="confirm()"><i class="fa fa-trash-o"></i> Confirmer</button>
+        </div>
+    </div>
+</div>

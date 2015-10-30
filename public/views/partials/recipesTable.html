@@ -1,0 +1,95 @@
+﻿<input type="hidden" name="page" ng-model="page" ng-init="page='Recettes'" />
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Tableau de bord des Recettes pour l'année civile {{currentDate.year}}
+                </h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <i class="fa fa-table"></i><a ng-if="index !== 1" ng-click="changePage(1)"> Recettes</a><span ng-if="index === 1"> Recettes</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-table"></i><a ng-if="index !== 2" ng-click="changePage(2)"> Recettes Liquide</a><span ng-if="index === 2"> Recettes Liquide</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-table"></i><a ng-if="index !== 3" ng-click="changePage(3)"> Occupation Personelle</a><span ng-if="index === 3"> Occupation Personelle</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-table"></i>
+                            <span ng-if="index === 1"> Recettes</span>
+                            <span ng-if="index === 2"> Recettes Liquide</span>
+                            <span ng-if="index === 3"> Occupation Personelle</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div ng-if="index !== 3 && dashboard !== undefined" class="table-responsive">
+                            <table id="table1" class="table table-bordered table-hover table-striped table-easy16i-dashboard">
+                                <thead>
+                                    <tr>
+                                        <th>Recettes {{currentDate.year}}</th>
+                                        <th>Loyers</th>
+                                        <th>ventes de marchandises</th>
+                                        <th>Autres prestations</th>
+                                        <th>Total recettes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="ligne in dashboard">
+                                        <td><strong>{{ligne.title | capitalize}}</strong></td>
+                                        <td>{{ligne.loyers !== 0 ? (ligne.loyers | currency) : null}}</td>
+                                        <td>{{ligne.vente !== 0 ? (ligne.vente | currency): null}}</td>
+                                        <td>{{ligne.autre !== 0 ? (ligne.autre | currency): null}}</td>
+                                        <td>{{ligne.total !== 0 ? (ligne.total | currency): null}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div ng-if="index === 3 && dashboard !== undefined">
+                            <table id="table1" class="table table-bordered table-hover table-striped table-easy16i-dashboard">
+                                <thead>
+                                    <tr>
+                                        <th>Recettes {{currentDate.year}} pour occupation du gite par le propriétaire</th>
+                                        <th>Montant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="ligne in dashboard">
+                                        <td><strong>{{ligne.title | capitalize}}</strong></td>
+                                        <td>{{ligne.perso !== 0 ? (ligne.perso | currency): null}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-info" ng-if="dashboard === undefined">
+                            <i class="fa fa-info-circle"></i> Vous pouvez lancer les calculs de l'année civile <strong>{{currentDate.year}}</strong> les données sera modifiable via les masques de saisie avant la validation de l'administrateur.
+                        </div>
+                        <div class="form-group pull-right" ng-if="dashboard === undefined">
+                            <button type="button" class="btn btn-easy16i" ng-click="displayRecipe()">Lancer les calculs avant consultation</button>
+                        </div>
+
+                        <button class="btn btn-link pull-right" ng-if="dashboard !== undefined" ng-click="exportToExcel('#table1')">
+                            <span class="glyphicon glyphicon-share"></span> Export to Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

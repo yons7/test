@@ -1,0 +1,34 @@
+{
+  "name": "Easy16i",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "description": "Easy16i",
+  "author": {
+    "name": "Akka",
+    "email": ""
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "bcryptjs": "^2.2.1",
+    "body-parser": "^1.8.4",
+    "compression": "^1.5.2",
+    "connect-flash": "^0.1.1",
+    "consolidate": "^0.13.1",
+    "cookie-parser": "^1.3.5",
+    "debug": "^2.0.0",
+    "express": "^4.9.8",
+    "express-session": "^1.11.3",
+    "http-status": "^0.2.0",
+    "jade": "~1.6.0",
+    "jwt-simple": "^0.3.1",
+    "log": "^1.4.0",
+    "mongoose": "^4.1.5",
+    "morgan": "^1.6.1",
+    "nodemailer": "^1.4.0",
+    "serve-favicon": "^2.1.7",
+    "stylus": "^0.42.3"
+  }
+}

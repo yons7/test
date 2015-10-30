@@ -1,0 +1,160 @@
+﻿
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Gestion des comptes utilisateurs
+                </h1>
+                <ol class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                    </li>
+                    <li>
+                        <i class="fa fa-table"></i> Ajout d'utilisateurs
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-user-plus"></i><span>Ajouter un nouveau compte</span>
+                        </h3>
+                    </div>
+
+
+                    <form role="form" class="panel-body" novalidate angular-validator name="subscriptionForm" angular-validator-submit="createNewUser({ 'firstname' : this.firstname,
+                                                                                                                                                        'lastname' : this.lastname,
+                                                                                                                                                        'password' : this.password,
+                                                                                                                                                        'email' : this.email,
+                                                                                                                                                       'role' : this.rolelist.selectedOption.id})">
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="lastname">Nom : </label>
+                                <input type="text" class="form-control" name="lastname" id="lastname" ng-model="lastname" placeholder="Saisir le nom.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="firstname">Prénom : </label>
+                                <input type="text" class="form-control" name="firstname" id="firstname" ng-model="firstname" placeholder="Saisir le prénom.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email : </label>
+                                <input type="email" class="form-control" name="email" id="email" ng-model="email" placeholder="Saisir l'email.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur" invalid-message="'{{validationMessages.emailBadFormat}}'">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label for="role">Role du nouvel utilisateur : </label>
+                                <select name="role" ng-model="rolelist.selectedOption" class="form-control" id="role" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                        ng-options="option.name for option in rolelist.availableOptions track by option.id">
+                                    <option value="" disabled selected>Selectionner le role du nouvel utilisateur..</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputPassword" class="control-label">Mot de passe : </label>
+                                <div class="form-group">
+                                    <input type="password" ng-minlength="6" class="form-control" id="password" name="password" ng-model="password" placeholder="Saisir le mot de passe.." required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur" validator="passwordValidator(subscriptionForm.password.$viewValue) !== false" invalid-message="passwordValidator(subscriptionForm.password.$viewValue)">
+                                    <span class=" help-block">Au moins 6 caractères</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="passwordConfirmation" name="passwordConfirmation" ng-model="passwordConfirmation" placeholder="Confirmer le mot de passe.." required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur" validator="subscriptionForm.password.$viewValue ===subscriptionForm.passwordConfirmation.$viewValue" invalid-message="'Les mots de passe saisis ne sont pas identiques.'">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button type="submit" class="btn btn-easy16i">Créer le compte</button>
+                            <button type="button" class="btn btn-default" ng-click="subscriptionForm.reset()">Vider les champs</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header">
+            <div class="content-heading"><h3></h3></div>
+            <ol class="breadcrumb">
+                <li class="active">
+                    <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                </li>
+                <li>
+                    <i class="fa fa-table"></i> Liste des utilisateurs
+                </li>
+            </ol>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-users"></i><span>Liste des utilisateurs</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table ng-show="userList.length > 0" st-table="displayedUserList" st-safe-src="userList" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th st-sort="lastname">Nom</th>
+                                        <th st-sort="firstname">Prénom</th>
+                                        <th st-sort="email">Email</th>
+                                        <th>
+                                            <select st-search="role">
+                                                <option value="">Profil</option>
+                                                <option ng-repeat="var in userList | unique : 'role'" value="{{var.role}}"> {{var.role == 1 ? "Administrateur":"Utilisateur" }}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="created">Date de création</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="user in displayedUserList">
+                                        <td>{{user.lastname | uppercase}}</td>
+                                        <td>{{user.firstname }}</td>
+                                        <td>{{user.email }}</td>
+                                        <td>{{user.role == 1 ? "Administrateur":"Utilisateur" }}</td>
+                                        <td>{{user.created | date}}</td>
+                                        <td>
+                                            <div ng-if="user.email!=currentUser.email">
+                                                <div class="pull-right">
+                                                    <!--<button type="button" ng-click="" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-edit"></i></button>-->
+                                                    <div confirm-delete-inline on-confirm="deleteUser(user)"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="userList.length >= itemsByPage">
+                                        <td colspan=" 6" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="alert alert-info col-lg-12" ng-show="userList.length <= 0">
+                        <i class="fa fa-info-circle"></i> Aucun utilisateur n'a encore été ajouté
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

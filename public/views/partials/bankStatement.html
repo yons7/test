@@ -1,0 +1,198 @@
+﻿<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Importer votre relevé bancaire pour {{months[currentDate.month- 1]}} {{currentDate.year}}
+                </h1>
+                <ol class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                    </li>
+                    <li ng-if="currentBankStatement === undefined || currentBankStatement === null">
+                        <i class="fa fa-file-excel-o"></i> Import du relevé bancaire
+                    </li>
+                    <li ng-if="currentBankStatement !== undefined && currentBankStatement !== null">
+                        <i class="fa fa-eye"></i> Votre relevé bancaire pour {{months[currentDate.month -1]}} {{currentDate.year}}
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row" ng-if="currentBankStatement === undefined || currentBankStatement === null">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <strong><i class="fa fa-file-excel-o"></i><span> Choisir le fichier à importer</span></strong>
+                        </h3>
+                    </div>
+
+                    <form role="form" class="panel-body" name="xlsxUploadForm">
+                        <h4>Selectionner un fichier depuis votre ordinateur</h4>
+                        <div class="form-group">
+                            <input type="file" name="xlfile" id="xlfile" onchange="angular.element(this).scope().startImport(this)" />
+                        </div>
+
+                        <h4>ou glisser-déposer le fichier ci-dessous</h4>
+                        <div id="drop" class="upload-drop-zone" file-dropzone>{{currentFileInDropZone}}</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header" ng-if="selectedSheet != undefined && (currentBankStatement === undefined || currentBankStatement === null)">
+            <div class="content-heading"><h3></h3></div>
+            <ol class="breadcrumb">
+                <li class="active">
+                    <i class="fa fa-edit"></i><a href="#{{config.routes.home.RouteUrl}}"> Easy 16i comptable</a>
+                </li>
+                <li>
+                    <i class="fa fa-eye"></i> Aperçu du relevé bancaire
+                </li>
+            </ol>
+        </div>
+
+        <div class="row" ng-if="selectedSheet != undefined && (currentBankStatement === undefined || currentBankStatement === null)">
+            <div class="col-lg-12">
+                <div>
+                    <p>Selectionnez la feuille qui corresponds à votre relevé:</p>
+                    <p class="btn-toolbar">
+                        <button ng-repeat="sheet in sheetList" ng-click="selectSheet(sheet)" ng-class="checkSelected(sheet)">{{sheet}}</button>
+                    </p>
+                </div>
+
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <strong><i class="fa fa-eye"></i><span> Aperçu de votre Relevé bancaire avant l'enregistrement</span></strong>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+
+                            <table st-table="displayedStatementLineList" st-safe-src="selectedSheet" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <form id="headerSelectionForm" class="form-horizontal">
+                                            <div class="form-group">
+                                                <th ng-repeat="header in selectedSheet.colHeaders">
+                                                    <div class="selectContainer">
+                                                        <select name="select_{{$index}}" ng-model="columnList.selectedOption[$index]" class="form-control" id="select_{{$index}}"
+                                                                ng-disabled="value.disabled"
+                                                                ng-options="option.name for option in filteredSet=(columnList.availableOptions | filter: isOptionDisabled($index)) track by option.id"
+                                                                ng-change="updateOptions({{$index}})"
+                                                                ng-show="(!columnList.selectedOption[$index] || columnList.selectedOption[$index].id == 0) && filteredSet.length > 1"></select>
+                                                        <div class="displaySelect btn btn-success" ng-show="columnList.selectedOption[$index] && columnList.selectedOption[$index].id != 0">
+                                                            <span class="value">{{columnList.selectedOption[$index].name}}</span>
+                                                            <i class="fa fa-times closeButton" ng-click="columnList.selectedOption[$index] = columnList.availableOptions[0]; clearOption($index)"></i>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th>&nbsp;</th>
+                                            </div>
+                                        </form>
+                                    </tr>
+                                    <tr>
+                                        <th ng-repeat="header in selectedSheet.colHeaders">{{header}}</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="line in displayedStatementLineList" ng-class="checkRow(line)">
+                                        <td ng-repeat="header in selectedSheet.colHeaders">{{line[header]}}</td>
+                                        <td class="buttons">
+                                            <div class="pull-right">
+                                                <button type="button" class="btn btn-xs btn-danger" ng-click="line.$disabled = true" ng-show="!line.$disabled"><i class="fa fa-times"></i></button>
+                                                <button type="button" class="btn btn-xs btn-info" ng-click="line.$disabled = false" ng-show="line.$disabled"><i class="fa fa-undo"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{selectedSheet.colHeaders.length + 1 }}" class="text-center highrow" style="line-height:0; padding-bottom:0;">
+                                            <div class="bankstatementfooter">
+                                                <label for="accomname" class="pull-left">Saisir/Vérifier votre solde du debut de mois avant d'enregistrer : </label>
+                                                <input type="number" class="form-control pull-left" name="startbalance" id="startbalance" ng-model="selectedSheet.startbalance" placeholder="Solde de début du mois..">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="selectedSheet.length > itemsByPage">
+                                        <td colspan="{{selectedSheet.colHeaders.length + 1 }}" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="{{selectedSheet.colHeaders.length + 1 }}" class="text-center" style="border-top: none;">
+                                            <button type="button" class="btn btn-warning" ng-click="saveStatement()" ng-class="checkStatementValid()"><i class="fa fa-floppy-o"></i>  Enregistrer ce relevé</button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-if="currentBankStatement !== undefined && currentBankStatement !== null">
+            <div class="col-lg-12">
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> Vous avez déjà saisi votre relevé pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong>, il est affiché ci-dessous:
+                </div>
+
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center">
+                            <i class="fa fa-eye"></i><span><strong> Relevé Bancaire {{months[currentDate.month-1]}} {{currentDate.year}}</strong></span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table st-table="displayedCurrentBankStatement" st-safe-src="currentBankStatement.transactions" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Libellé</th>
+                                        <th>Débit</th>
+                                        <th>Crédit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="line in displayedCurrentBankStatement">
+                                        <td>{{line.title}}</td>
+                                        <td>{{(line.type ==='Débit') ? line.amount : null}}</td>
+                                        <td>{{(line.type ==='Crédit') ? line.amount : null}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="highrow"><div class="text-right"><strong>Solde début du mois</strong></div></td>
+                                        <td colspan="1" class="highrow"><div class="text-right"><strong>{{currentBankStatement.startbalance}}</strong></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><div class="text-right"><strong>Solde fin du mois</strong></div></td>
+                                        <td colspan="1"><div class="text-right"><strong>{{currentBankStatement.endbalance}}</strong></div></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="currentBankStatement.transactions.length > itemsByPage">
+                                        <td colspan="4" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div confirm-delete-form on-confirm="deleteStatement()" btn-text="'Supprimer ce relevé'" style="margin-top: 32px;"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,201 @@
+﻿
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Gestion des Frais Kilométriques
+                </h1>
+                <ol class="breadcrumb">
+                    <li ng-if="isEdit">
+                        <i class="fa fa-edit"></i><a ng-click="changePage()"> Ajout des justificatifs des Frais Kilométriques</a>
+                    </li>
+                    <li class="active" ng-if="!isEdit">
+                        <i class="fa fa-edit"></i> Ajout des justificatifs des Frais Kilométriques
+                    </li>
+                    <li ng-if="!isEdit">
+                        <i class="fa fa-table"></i><a ng-click="changePage()"> Liste des justificatifs des Frais Kilométriques</a>
+                    </li>
+                    <li class="active" ng-if="isEdit">
+                        <i class="fa fa-table"></i> Liste des justificatifs des Frais Kilométriques
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-easy16i">
+                    <div class="panel-heading">
+                        <h3 class="text-center" ng-hide="isEdit">
+                            <i class="fa fa-user-plus"></i><span>Enregistrer un nouveau justificatif de Frais Kilométriques</span>
+                        </h3>
+                        <h3 class="text-center" ng-show="isEdit">
+                            <i class="fa fa-users"></i><span>Liste des Frais Kilométriques</span>
+                        </h3>
+                    </div>
+                    <div class="panel-body" ng-hide="isEdit">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="type">Type de Paiement :</label>
+                                <div class="radio">
+                                    <label class="radio-inline" ng-repeat="type in paymentRadio.availableOptions">
+                                        <input type="radio" name="typePayement" ng-model="paymentRadio.selectedOption" ng-value="type">{{type.name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form role="form" novalidate angular-validator name="kmCreationForm" angular-validator-submit="createUpdateKm( {'num_justification'   : this.num,
+                                                                                                                                                                'date'                : currentDate ,
+                                                                                                                                                                'modePayment'            : this.paymentRadio.selectedOption.id,
+                                                                                                                                                                'gite'                : this.selectedGite._id,
+                                                                                                                                                                'vehicle'             : this.selectedvehicle._id,
+                                                                                                                                                                'date_travel'         : this.date,
+                                                                                                                                                                'km'                  : this.nombreKms,
+                                                                                                                                                                'start_place'         : this.start,
+                                                                                                                                                                'finish_place'        : this.finish,
+                                                                                                                                                                'motif'               : this.motif
+                                                                                                                                                           })">
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="vehicle">Véhicules : </label>
+                                    <select name="vehicle" ng-model="selectedvehicle" class="form-control" id="vehicle" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                            ng-options="(vehicle.immatriculation +'  '+ vehicle.type +'-'+ vehicle.cv) for vehicle in vehicleList track by vehicle._id">
+                                        <option value="" disabled selected>Sélectionner une Véhicules ..</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <p>Si votre Véhicule n'existe pas dans la liste ci-dessus, vous pouvez l'ajouter ici: <a href="#{{config.routes.vehicle.RouteUrl}}">Gestion des Véhicules</a>.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="gite">Gite : </label>
+                                    <select name="gite" ng-model="selectedGite" class="form-control" id="gite" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="blur"
+                                            ng-options="(accomodation.name +'  '+ accomodation.city +'-'+ accomodation.country) for accomodation in accomodationList track by accomodation._id">
+                                        <option value="" disabled selected>Sélectionner une Gite ..</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <p>Si votre Gite n'existe pas dans la liste ci-dessus, vous pouvez l'ajouter ici: <a href="#{{config.routes.accomodation.RouteUrl}}">Gestion des Gites</a>.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="num">Numéro de piéce justificatif : </label>
+                                    <input type="text" class="form-control" name="num" id="num" ng-model="num" placeholder="Saisir le num de la piéce justificatif.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="motif">Motif de rembourssement : </label>
+                                    <textarea class="form-control" name="motif" id="motif" ng-model="motif" placeholder="Saisir le motif ex : Entretirn et amélioartion du gite.." rows="5" maxlength="250" style="resize:none;"></textarea>
+                                </div>
+
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="panel panel-easy16i-inside">
+                                    <div class="panel-heading">
+                                        <h4 class="text-center">Information Détails des frais Kms</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label for="date">Date du déplacement : </label>
+                                            <input type="date" class="form-control" name="date" id="date" ng-model="date" placeholder="yyyy-MM-dd" required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="periode">Nombre de kms Parcourus : </label>
+                                            <input type="number" min="0" step="100" class="form-control" name="nombreKms" id="nombreKms" ng-model="nombreKms" placeholder="Saisir le nombre de kms Parcourus.." required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="num">Lieu de départ : </label>
+                                            <input type="text" class="form-control" name="start" id="start" ng-model="start" placeholder="Saisir le lieu de départ.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="num">Lieu d'arrivée : </label>
+                                            <input type="text" class="form-control" name="finish" id="finish" ng-model="finish" placeholder="Saisir le lieu de d'arrivée'.." size=50 required required-message="'{{validationMessages.requiredMessage}}'" validate-on="dirty">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <button type="submit" class="btn btn-easy16i">Enregistrer la justificatif des frais Kms</button>
+                                    <button type="button" class="btn btn-default" ng-click="reset()">Vider les champs</button>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive" ng-show="isEdit">
+                            <table st-table="displayedKmList" st-safe-src="kmList" class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>N° de piéce justificatif</th>
+                                        <th>
+                                            <select st-search="gite._id">
+                                                <option value="">Gites</option>
+                                                <option ng-repeat="var in kmList | unique : 'gite._id'" value="{{var.gite._id}}">{{var.gite.name +'  '+ var.gite.city +'-'+ var.gite.country}}</option>
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select st-search="modePayment">
+                                                <option value="">Mode Paiement</option>
+                                                <option ng-repeat="var in kmList | unique : 'modePayment'" value="{{var.modePayment}}"> {{paymentRadio.availableOptions[var.modePayment-1].name}}</option>
+                                            </select>
+                                        </th>
+                                        <th>
+                                            <select st-search="vehicle._id">
+                                                <option value="">Véhicules</option>
+                                                <option ng-repeat="var in kmList | unique : 'vehicle._id'" value="{{var.vehicle._id}}">{{var.vehicle.immatriculation +'  '+ var.vehicle.type +' ('+ var.vehicle.cv +')'}}</option>
+                                            </select>
+                                        </th>
+                                        <th st-sort="date_travel">Date du déplacement</th>
+                                        <th>Information</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="param in displayedKmList">
+                                        <td>{{param.num_justification}}</td>
+                                        <td>{{param.gite.name +'  '+ param.gite.city +'-'+ param.gite.country}}</td>
+                                        <td>
+                                            {{paymentRadio.availableOptions[param.modePayment-1].name}}
+                                        </td>
+                                        <td>{{param.vehicle.immatriculation +'  '+ param.vehicle.type +' ('+ param.vehicle.cv +')'}}</td>
+                                        <td>{{param.date_travel | date}}</td>
+                                        <td>{{param.km + ' Km ' + param.start_place + ' => ' + param.finish_place}}</td>
+                                        <td>
+                                            <div class="pull-right">
+                                                <div confirm-delete-inline on-confirm="deleteKm(param)" on-start-edit="starEditKm(param)" allow-edit="true"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr ng-show="displayedKmList.length >= 10">
+                                        <td colspan="8" class="text-center">
+                                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="displayedKmList.length === 0">
+                                        <td colspan="8" class="text-center">
+                                            <div class="alert alert-info col-lg-12">
+                                                <i class="fa fa-info-circle"></i> Aucun justificatif de frais kilométrique du filter que vous avez choisi n'a été saisie pour <strong>{{months[currentDate.month-1]}} {{currentDate.year}}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

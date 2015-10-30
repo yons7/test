@@ -1,0 +1,11 @@
+﻿<div id="partials/templates/deleteConfirmationForm.html">
+    <div class="text-center">
+        <div ng-hide="isDeleting" class="buttonFormPanel center-block">
+            <button type="button" class="btn btn-danger" ng-click="startDelete()"><i class="fa fa-trash-o"></i>  {{btnText? btnText: "Supprimer"}}</button>
+        </div>
+        <div ng-show="isDeleting" class="confirmFormPanel text-center">
+            <button type="button" class="btn btn-default" ng-click="cancel()"> Annuler</button>
+            <button type="button" class="btn btn-danger" ng-click="confirm()"><i class="fa fa-trash-o"></i> Confirmer</button>
+        </div>
+    </div>
+</div>
