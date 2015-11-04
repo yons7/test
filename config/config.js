@@ -65,13 +65,16 @@ config.mail.text = 'Bonjour, Votre mot de passe est : ';
 
 //MongoDB
 config.parametreBd = {};
-config.parametreBd.host = '127.0.0.1';
+config.parametreBd.host = 'localhost';
 config.parametreBd.port = '27017';
 config.parametreBd.nameBd = 'configuration';
 config.parametreBd.email = 'Comptable.Easy16i@gmail.com';
 config.parametreBd.password = 'admin/123';
-config.dbURI = 'mongodb://admin:test@ds052408.mongolab.com:52408/';
+config.dbURI = 'mongodb://' + config.parametreBd.host + ':' + config.parametreBd.port + '/';
 
+config.demoVersion = false;
+config.dbURI = config.demoVersion ? 'mongodb://admin:test@ds052408.mongolab.com:52408/' : config.dbURI;
+config.dbURI_user = config.demoVersion ? 'mongodb://admin:test@ds048878.mongolab.com:48878/' : config.dbURI;
 
 config.client.init = {};
 config.client.init.year = 2014;

@@ -62,7 +62,7 @@ module.exports = {
                 }
                 if (con === undefined) {
                     // Create the database connection 
-                    connection = mongoose.createConnection(config.dbURI + 'user_' + user._id, {}, function (err) {
+                    connection = mongoose.createConnection(config.dbURI_user + 'user_' + user._id, {}, function (err) {
                         if (err) {
                             return cb('Internal Server mongo DB Error : ' + err);
                         }
