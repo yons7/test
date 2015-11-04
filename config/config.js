@@ -72,7 +72,7 @@ config.parametreBd.email = 'Comptable.Easy16i@gmail.com';
 config.parametreBd.password = 'admin/123';
 config.dbURI = 'mongodb://' + config.parametreBd.host + ':' + config.parametreBd.port + '/';
 
-config.demoVersion = false;
+config.demoVersion = true;
 config.dbURI = config.demoVersion ? 'mongodb://admin:test@ds052408.mongolab.com:52408/' : config.dbURI;
 config.dbURI_user = config.demoVersion ? 'mongodb://admin:test@ds048878.mongolab.com:48878/' : config.dbURI;
 
