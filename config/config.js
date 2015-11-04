@@ -70,7 +70,7 @@ config.parametreBd.port = '27017';
 config.parametreBd.nameBd = 'configuration';
 config.parametreBd.email = 'Comptable.Easy16i@gmail.com';
 config.parametreBd.password = 'admin/123';
-config.dbURI = 'mongodb://' + config.parametreBd.host + ':' + config.parametreBd.port + '/';
+config.dbURI = 'mongodb://admin:test@ds052408.mongolab.com:52408/';
 
 
 config.client.init = {};
