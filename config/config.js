@@ -50,13 +50,12 @@ config.mail = {};
 config.mail.transport = {};
 config.mail.transport.protocol = 'SMTP';
 config.mail.transport.param = {};
-//config.mail.transport.param.service = 'Gmail';
-config.mail.transport.param.host = '192.168.254.16' // akka proxy
+config.mail.transport.param.service = 'Gmail';
 config.mail.transport.param.port = 25,
 config.mail.transport.param.debug = true,
 config.mail.transport.param.auth = {};
-config.mail.transport.param.auth.user = 'badreddine.bennix@akka.eu'; //'Comptable.Easy16i@gmail.com'
-config.mail.transport.param.auth.pass = 'akka@2014!' //'admin/123'
+config.mail.transport.param.auth.user = 'Comptable.Easy16i@gmail.com'
+config.mail.transport.param.auth.pass = 'admin/123'
 config.mail.transport.param.tls = {};
 config.mail.transport.param.tls.ciphers = 'SSLv3';
 config.mail.transport.param.tls.rejectUnauthorized = false;
@@ -75,6 +74,7 @@ config.dbURI = 'mongodb://' + config.parametreBd.host + ':' + config.parametreBd
 config.demoVersion = true;
 config.dbURI = config.demoVersion ? 'mongodb://admin:test@ds052408.mongolab.com:52408/' : config.dbURI;
 config.dbURI_user = config.demoVersion ? 'mongodb://admin:test@ds048878.mongolab.com:48878/' : config.dbURI;
+
 
 config.client.init = {};
 config.client.init.year = 2014;
